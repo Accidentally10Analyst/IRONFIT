@@ -1,0 +1,1073 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IronFit | Premium Gym Lifestyle Store</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            AOS.init();
+        });
+    </script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#1e40af',
+                        secondary: '#1e3a8a',
+                        accent: '#e11d48',
+                        dark: '#111827',
+                        light: '#f3f4f6'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        .page {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .cart-count {
+            top: -8px;
+            right: -8px;
+            width: 20px;
+            height: 20px;
+            font-size: 12px;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50">
+<!-- Navigation -->
+<nav class="bg-white shadow-lg sticky top-0 z-50">
+    <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+        <div class="flex items-center space-x-4">
+            <a href="#" onclick="showPage('home')" class="text-2xl font-bold text-primary flex items-center">
+                <i class="fas fa-dumbbell mr-2"></i>
+                IRONFIT
+            </a>
+        </div>
+        <div class="hidden md:flex space-x-6">
+            <a href="#" onclick="showPage('home')" class="hover:text-accent transition">Home</a>
+            <a href="#" onclick="showPage('shop')" class="hover:text-accent transition">Shop</a>
+            <a href="#" onclick="showPage('categories')" class="hover:text-accent transition">Categories</a>
+            <a href="#" onclick="showPage('about')" class="hover:text-accent transition">About</a>
+            <a href="#" onclick="showPage('contact')" class="hover:text-accent transition">Contact</a>
+        </div>
+        <div class="flex items-center space-x-4">
+            <!-- Cart Button -->
+            <div class="relative">
+                <button onclick="showPage('cart')" class="hover:text-accent transition">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span id="cartCount"
+                        class="cart-count absolute bg-accent text-white rounded-full flex items-center justify-center hidden">0</span>
+                </button>
+            </div>
+
+            <!-- Sign In Button -->
+            <button id="signInBtn" onclick="toggleSignInModal()" class="bg-primary text-white px-4 py-1 rounded hover:bg-secondary">
+                Sign In
+            </button>
+
+
+            <!-- Welcome Message -->
+            <span id="welcomeUser" class="text-primary font-semibold hidden"></span>
+
+            <!-- Logout Button -->
+            <button id="logoutBtn" onclick="handleLogout()"
+                class="bg-gray-200 text-gray-800 px-3 py-1 rounded hover:bg-gray-300 hidden">Logout</button>
+
+            <!-- Mobile Menu Icon -->
+            <button class="md:hidden focus:outline-none" onclick="toggleMobileMenu()">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </div>
+</nav>
+
+<!-- Sign In Modal -->
+<div id="signInModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+    <div class="bg-white rounded-lg shadow-lg p-6 w-80">
+        <h2 class="text-xl font-bold mb-4">Sign In</h2>
+        <input type="text" id="signinUsername" placeholder="Email or Phone"
+            class="w-full border px-3 py-2 mb-3 rounded" />
+        <input type="password" id="signinPassword" placeholder="Password"
+            class="w-full border px-3 py-2 mb-4 rounded" />
+        <button onclick="handleSignIn()"
+            class="bg-primary hover:bg-secondary text-white font-bold py-2 w-full rounded">Login</button>
+        <button onclick="toggleSignInModal()"
+            class="mt-3 text-gray-500 hover:text-gray-700 text-sm underline w-full text-center">Cancel</button>
+    </div>
+</div>
+
+<!-- JavaScript to handle Sign In Modal and UI -->
+<script>
+    function toggleSignInModal() {
+        const modal = document.getElementById('signInModal');
+        modal.classList.toggle('hidden');
+    }
+
+    function handleSignIn() {
+        const username = document.getElementById('signinUsername').value.trim();
+        const password = document.getElementById('signinPassword').value.trim();
+
+        if (username && password) {
+            alert('Welcome, ' + username + '!');
+            toggleSignInModal();
+
+            // Update navbar
+            document.getElementById('signInBtn').classList.add('hidden');
+            document.getElementById('welcomeUser').textContent = `Welcome, ${username}`;
+            document.getElementById('welcomeUser').classList.remove('hidden');
+            document.getElementById('logoutBtn').classList.remove('hidden');
+        } else {
+            alert('Please enter both email/phone and password.');
+        }
+    }
+
+    function handleLogout() {
+        // Restore navbar to default
+        document.getElementById('signInBtn').classList.remove('hidden');
+        document.getElementById('welcomeUser').classList.add('hidden');
+        document.getElementById('logoutBtn').classList.add('hidden');
+
+        alert('You have been logged out.');
+    }
+</script>
+        <!-- Mobile Menu -->
+<div id="mobileMenu" class="hidden md:hidden bg-white py-2 px-4">
+    <a href="#" onclick="showPage('home'); toggleMobileMenu()" class="block py-2 hover:text-accent transition">Home</a>
+    <a href="#" onclick="showPage('shop'); toggleMobileMenu()" class="block py-2 hover:text-accent transition">Shop</a>
+    <a href="#" onclick="showPage('categories'); toggleMobileMenu()"
+        class="block py-2 hover:text-accent transition">Categories</a>
+    <a href="#" onclick="showPage('about'); toggleMobileMenu()"
+        class="block py-2 hover:text-accent transition">About</a>
+    <a href="#" onclick="showPage('contact'); toggleMobileMenu()"
+        class="block py-2 hover:text-accent transition">Contact</a>
+</div>
+<!-- Main Content -->
+<main class="container mx-auto px-4 py-8">
+    <!-- Home Page -->
+    <div id="home" class="page active">
+        <section class="bg-gradient-to-r from-primary to-secondary text-white rounded-xl overflow-hidden mb-12">
+            <div class="container mx-auto px-6 py-16">
+                <div class="flex flex-col md:flex-row items-center">
+                    <div class="md:w-1/2 mb-10 md:mb-0">
+                        <h1 class="text-4xl md:text-5xl font-bold mb-6">FITNESS MEETS FASHION</h1>
+                        <p class="text-lg mb-8">Premium unisex gym wear & accessories designed for performance.</p>
+                        <button onclick="showPage('shop')"
+                            class="bg-accent hover:bg-opacity-90 text-white font-bold py-3 px-6 rounded-full transition">
+                            Shop Now
+                        </button>
+                    </div>
+                    <div class="md:w-1/2">
+                        <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/e97ece45-3ef1-49a5-8c4f-c43dd7580a19.png"
+                            alt="Athletes wearing IronFit workout clothes in a modern gym"
+                            class="rounded-lg shadow-2xl">
+                    </div>
+                </div>
+            </div>
+        </section>
+            <!-- Featured Categories -->
+            <section class="mb-16">
+                <h2 class="text-3xl font-bold text-center mb-12">Shop By Category</h2>
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+                    <div onclick="showPage('shop'); filterProducts('workout wear')"
+                        class="bg-white rounded-xl shadow-md overflow-hidden cursor-pointer transition transform hover:scale-[1.02]">
+                        <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/a04bd2e3-830a-4bd3-96ae-503b81ec8f28.png"
+                            alt="Variety of workout clothes in assorted colors" class="w-full h-48 object-cover">
+                        <div class="p-4">
+                            <h3 class="font-bold text-lg mb-2">Workout Wear</h3>
+                            <p class="text-gray-600">120+ products</p>
+                        </div>
+                    </div>
+
+                    <div onclick="showPage('shop'); filterProducts('supplements')"
+                        class="bg-white rounded-xl shadow-md overflow-hidden cursor-pointer transition transform hover:scale-[1.02]">
+                        <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/75e9f400-0643-4a91-9cd7-16ad402540fc.png"
+                            alt="Protein powders and supplements neatly displayed" class="w-full h-48 object-cover">
+                        <div class="p-4">
+                            <h3 class="font-bold text-lg mb-2">Supplements</h3>
+                            <p class="text-gray-600">85+ products</p>
+                        </div>
+                    </div>
+
+                    <div onclick="showPage('shop'); filterProducts('equipment')"
+                        class="bg-white rounded-xl shadow-md overflow-hidden cursor-pointer transition transform hover:scale-[1.02]">
+                        <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/b14819f1-2e9b-4a16-b441-7dbc3442d814.png"
+                            alt="Modern gym equipment collection" class="w-full h-48 object-cover">
+                        <div class="p-4">
+                            <h3 class="font-bold text-lg mb-2">Equipment</h3>
+                            <p class="text-gray-600">150+ products</p>
+                        </div>
+                    </div>
+
+                    <div onclick="showPage('shop'); filterProducts('accessories')"
+                        class="bg-white rounded-xl shadow-md overflow-hidden cursor-pointer transition transform hover:scale-[1.02]">
+                        <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/14a42940-749d-434d-81cd-046122713498.png"
+                            alt="Gym accessories including water bottles and towels" class="w-full h-48 object-cover">
+                        <div class="p-4">
+                            <h3 class="font-bold text-lg mb-2">Accessories</h3>
+                            <p class="text-gray-600">200+ products</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+        <!-- Shop Page -->
+        <div id="shop" class="page">
+            <div class="flex justify-between items-center mb-8">
+                <h2 class="text-3xl font-bold">All Products</h2>
+                <div class="flex items-center space-x-4">
+                    <select id="sortBy" onchange="sortProducts()"
+                        class="bg-white border border-gray-300 rounded-md py-2 pl-3 pr-8 text-sm focus:outline-none focus:ring-2 focus:ring-primary">
+                        <option value="featured">Featured</option>
+                        <option value="low-high">Price: Low to High</option>
+                        <option value="high-low">Price: High to Low</option>
+                    </select>
+                    <select id="filterBy" onchange="filterProducts(this.value)"
+                        class="bg-white border border-gray-300 rounded-md py-2 pl-3 pr-8 text-sm focus:outline-none focus:ring-2 focus:ring-primary">
+                        <option value="all">All Categories</option>
+                        <option value="workout wear">Workout Wear</option>
+                        <option value="supplements">Supplements</option>
+                        <option value="equipment">Equipment</option>
+                        <option value="accessories">Accessories</option>
+                    </select>
+                </div>
+            </div>
+
+            <div id="productContainer" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                <!-- Products will be loaded here -->
+            </div>
+
+            <div class="flex justify-center mt-12">
+                <button id="loadMore"
+                    class="bg-primary hover:bg-opacity-90 text-white font-bold py-3 px-6 rounded-full transition">
+                    Load More
+                </button>
+            </div>
+        </div>
+
+<!-- Categories Page -->
+<div id="categories" class="page py-16 px-6 bg-gray-50">
+    <h2 class="text-4xl font-bold text-center mb-12">Shop by Category</h2>
+    <div class="space-y-6 max-w-6xl mx-auto">
+        <!-- Workout Wear -->
+        <div class="border rounded-xl shadow-lg overflow-hidden">
+            <button onclick="toggleCategory(0)"
+                class="w-full text-left flex justify-between items-center bg-white p-4 hover:bg-gray-100 transition">
+                <h3 class="text-xl font-semibold text-primary">👕 Workout Wear</h3>
+                <span id="arrow0" class="text-xl">+</span>
+            </button>
+            <div id="content0" class="hidden px-6 pb-6 bg-white">
+                <div class="grid md:grid-cols-2 gap-6 mt-4">
+                    <img src="https://i.ibb.co/PrzpNcn/gym-wear.jpg" class="rounded-xl shadow" alt="Workout Wear">
+                    <div>
+                        <p class="mb-4 text-gray-700">Workout wear improves your form, prevents rashes, and keeps you
+                            comfortable during intense sessions.</p>
+                        <ul class="list-disc list-inside text-gray-600 space-y-2">
+                            <li><strong>Why it's important:</strong> Reduces sweat accumulation and enhances movement.
+                            </li>
+                            <li><strong>If you skip it:</strong> You risk irritation and discomfort leading to lower
+                                motivation.</li>
+                            <li><strong>Alternatives:</strong> Dry-fit T-shirts, yoga pants, anti-odor fabrics.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Supplements -->
+        <div class="border rounded-xl shadow-lg overflow-hidden">
+            <button onclick="toggleCategory(1)"
+                class="w-full text-left flex justify-between items-center bg-white p-4 hover:bg-gray-100 transition">
+                <h3 class="text-xl font-semibold text-primary">💊 Supplements</h3>
+                <span id="arrow1" class="text-xl">+</span>
+            </button>
+            <div id="content1" class="hidden px-6 pb-6 bg-white">
+                <div class="grid md:grid-cols-2 gap-6 mt-4">
+                    <img src="https://i.ibb.co/Fzcf2Fb/supplements.jpg" class="rounded-xl shadow" alt="Supplements">
+                    <div>
+                        <p class="mb-4 text-gray-700">Supplements fill nutritional gaps and enhance recovery post
+                            workout.</p>
+                        <ul class="list-disc list-inside text-gray-600 space-y-2">
+                            <li><strong>Why it's important:</strong> Helps meet protein or vitamin needs for growth.
+                            </li>
+                            <li><strong>If you skip it:</strong> Your recovery slows down and fatigue increases.</li>
+                            <li><strong>Alternatives:</strong> Protein-rich diet, fortified foods, herbal tonics.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Equipment -->
+        <div class="border rounded-xl shadow-lg overflow-hidden">
+            <button onclick="toggleCategory(2)"
+                class="w-full text-left flex justify-between items-center bg-white p-4 hover:bg-gray-100 transition">
+                <h3 class="text-xl font-semibold text-primary">🏋️ Equipment</h3>
+                <span id="arrow2" class="text-xl">+</span>
+            </button>
+            <div id="content2" class="hidden px-6 pb-6 bg-white">
+                <div class="grid md:grid-cols-2 gap-6 mt-4">
+                    <img src="https://i.ibb.co/42RzB5c/equipment.jpg" class="rounded-xl shadow" alt="Equipment">
+                    <div>
+                        <p class="mb-4 text-gray-700">Get fit at home with the right gear: bands, dumbbells, mats, and
+                            more.</p>
+                        <ul class="list-disc list-inside text-gray-600 space-y-2">
+                            <li><strong>Why it's important:</strong> Helps perform focused exercises safely.</li>
+                            <li><strong>If you skip it:</strong> You rely on limited bodyweight exercises only.</li>
+                            <li><strong>Alternatives:</strong> Water bottles, stairs, resistance bands.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Accessories -->
+        <div class="border rounded-xl shadow-lg overflow-hidden">
+            <button onclick="toggleCategory(3)"
+                class="w-full text-left flex justify-between items-center bg-white p-4 hover:bg-gray-100 transition">
+                <h3 class="text-xl font-semibold text-primary">🎒 Accessories</h3>
+                <span id="arrow3" class="text-xl">+</span>
+            </button>
+            <div id="content3" class="hidden px-6 pb-6 bg-white">
+                <div class="grid md:grid-cols-2 gap-6 mt-4">
+                    <img src="https://i.ibb.co/Kqj7C8s/accessories.jpg" class="rounded-xl shadow" alt="Accessories">
+                    <div>
+                        <p class="mb-4 text-gray-700">The little things that matter: bottles, straps, gloves, and more.
+                        </p>
+                        <ul class="list-disc list-inside text-gray-600 space-y-2">
+                            <li><strong>Why it's important:</strong> Supports better grip, hydration, comfort.</li>
+                            <li><strong>If you skip it:</strong> Leads to fatigue, poor form or injury risk.</li>
+                            <li><strong>Alternatives:</strong> DIY grips, reusable water bottles.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 👇 Fitness Facility Setup Section Added Here -->
+        <section class="bg-white p-10 mt-16 rounded-xl shadow-lg" data-aos="fade-up">
+            <div class="text-center max-w-6xl mx-auto">
+                <h2 class="text-3xl md:text-4xl font-bold text-dark mb-6">Setting up a fitness facility?</h2>
+                <p class="text-lg text-gray-600 mb-12">We offer custom solutions to help you set up your fitness
+                    facility from start to finish.</p>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-left">
+                    <div class="bg-light p-6 rounded-2xl shadow-md hover:shadow-xl transition duration-300">
+                        <h3 class="text-xl font-bold text-accent mb-2">1. Consult</h3>
+                        <p class="text-gray-700">We start with a need analysis to understand your unique and specific
+                            requirements & preferences.</p>
+                    </div>
+                    <div class="bg-light p-6 rounded-2xl shadow-md hover:shadow-xl transition duration-300">
+                        <h3 class="text-xl font-bold text-accent mb-2">2. Plan</h3>
+                        <p class="text-gray-700">Once we know what gym equipment you need, we create a custom design for
+                            your space through drawings and renderings.</p>
+                    </div>
+                    <div class="bg-light p-6 rounded-2xl shadow-md hover:shadow-xl transition duration-300">
+                        <h3 class="text-xl font-bold text-accent mb-2">3. Execute</h3>
+                        <p class="text-gray-700">We set up your gym or fitness space by delivering the perfect fitness
+                            equipment and help with installation as well.</p>
+                    </div>
+                </div>
+
+                <button
+                    class="mt-10 bg-accent text-white px-6 py-3 text-lg rounded-full hover:bg-opacity-90 transition duration-300">
+                    START A CUSTOM QUOTE
+                </button>
+            </div>
+        </section>
+    </div>
+</div>
+
+<script>
+    function toggleCategory(index) {
+        const content = document.getElementById(`content${index}`);
+        const arrow = document.getElementById(`arrow${index}`);
+        const isHidden = content.classList.contains('hidden');
+
+        for (let i = 0; i < 4; i++) {
+            document.getElementById(`content${i}`).classList.add('hidden');
+            document.getElementById(`arrow${i}`).innerText = '+';
+        }
+
+        if (isHidden) {
+            content.classList.remove('hidden');
+            arrow.innerText = '−';
+        }
+    }
+</script>
+
+<!-- About Page -->
+<div id="about" class="page bg-white py-20 px-6">
+  <div class="container mx-auto flex flex-col lg:flex-row items-center gap-12">
+    <div class="lg:w-1/2">
+      <h2 class="text-4xl font-bold mb-4">Our Story</h2>
+      <p class="text-gray-600 mb-6">At <span class="text-primary font-bold">IronFit</span>, we believe fitness is a way of life. Born from the passion of athletes and engineers, we’ve built a brand where performance meets precision.</p>
+      <ul class="list-disc pl-5 text-gray-600 mb-6 space-y-2">
+        <li>100% Quality Assurance</li>
+        <li>Eco-conscious & sustainable practices</li>
+        <li>Used by 10,000+ happy fitness enthusiasts</li>
+      </ul>
+      <button onclick="showPage('shop')" class="bg-primary hover:bg-secondary text-white font-bold py-3 px-6 rounded-full transition">
+        Explore Products
+      </button>
+    </div>
+    <div class="lg:w-1/2">
+      <iframe class="rounded-xl shadow-lg w-full h-64 lg:h-96" src="https://www.youtube.com/embed/I9yF9ey1E6Y" title="IronFit Journey" frameborder="0" allowfullscreen></iframe>
+    </div>
+  </div>
+  <!-- Team Section -->
+  <div class="mt-20">
+    <h3 class="text-3xl font-bold text-center mb-10">Meet Our Team</h3>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+      <div class="text-center">
+        <img src="https://randomuser.me/api/portraits/men/32.jpg" class="w-32 h-32 mx-auto rounded-full mb-4 shadow-lg">
+        <h4 class="text-xl font-semibold">Mark Carney</h4>
+        <p class="text-gray-500">Co-Founder & Fitness Expert</p>
+      </div>
+      <div class="text-center">
+        <img src="https://randomuser.me/api/portraits/women/44.jpg" class="w-32 h-32 mx-auto rounded-full mb-4 shadow-lg">
+        <h4 class="text-xl font-semibold">Sanaya Alex</h4>
+        <p class="text-gray-500">Product Designer</p>
+      </div>
+      <div class="text-center">
+        <img src="https://randomuser.me/api/portraits/men/64.jpg" class="w-32 h-32 mx-auto rounded-full mb-4 shadow-lg">
+        <h4 class="text-xl font-semibold">Jr. Noboa</h4>
+        <p class="text-gray-500">Marketing Head</p>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Contact Page -->
+<div id="contact" class="page bg-gray-50 py-20 px-6 relative">
+    <!-- Floating Contact Button -->
+    <a href="#contact"
+        class="fixed bottom-6 right-6 bg-green-500 hover:bg-green-600 text-white px-5 py-3 rounded-full shadow-lg z-50 flex items-center gap-2">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-6 h-6">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M21 10.5a8.38 8.38 0 01-.9 3.8l2.1 5.6-5.6-2.1a8.5 8.5 0 1114.4-7.3z" />
+        </svg>
+        Contact Us
+    </a>
+
+    <div class="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-12">
+        <!-- Form -->
+        <div>
+            <h2 class="text-4xl font-bold mb-6">Let's Connect</h2>
+            <p class="text-gray-600 mb-4">Have questions or need help? Drop us a message and we’ll get back shortly.</p>
+            <form id="contactForm" class="space-y-4">
+                <input type="text" id="name" placeholder="Full Name" class="w-full border px-4 py-2 rounded" required>
+                <input type="email" id="email" placeholder="Email" class="w-full border px-4 py-2 rounded" required>
+                <textarea id="message" placeholder="Message" rows="5" class="w-full border px-4 py-2 rounded"
+                    required></textarea>
+                <button type="submit"
+                    class="bg-primary hover:bg-secondary text-white font-bold py-2 px-6 rounded-full transition">
+                    Send Message
+                </button>
+                <p id="formResponse" class="text-green-600 font-semibold mt-2 hidden">Message sent successfully!</p>
+            </form>
+
+            <!-- Social Icons -->
+            <div class="flex gap-4 mt-6">
+                <a href="https://wa.me/8979996750" target="_blank"
+                    class="text-green-600 hover:text-green-800 text-2xl" title="WhatsApp">
+                    <i class="fab fa-whatsapp"></i>
+                </a>
+                <a href="tel:+918979996750" class="text-blue-600 hover:text-blue-800 text-2xl" title="Call">
+                    <i class="fas fa-phone"></i>
+                </a>
+                <a href="https://www.linkedin.com/company/yourcompany" target="_blank"
+                    class="text-blue-700 hover:text-blue-900 text-2xl" title="LinkedIn">
+                    <i class="fab fa-linkedin"></i>
+                </a>
+                <a href="https://www.instagram.com/yourcompany" target="_blank"
+                    class="text-pink-600 hover:text-pink-800 text-2xl" title="Instagram">
+                    <i class="fab fa-instagram"></i>
+                </a>
+            </div>
+        </div>
+
+        <!-- Map -->
+        <div>
+            <iframe class="w-full h-96 rounded-xl shadow-lg"
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3559.3660755867474!2d75.80753911504361!3d26.87968098313909!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x396db52e9f93057d%3A0x1ef22a1d9a9c9a3a!2sNational%20Institute%20of%20Ayurveda!5e0!3m2!1sen!2sin!4v1692424508203"
+                allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+        </div>
+    </div>
+</div>
+
+<!-- Add Font Awesome for Icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    integrity="sha512-pap04hHNPi1u4Qe6fZ6ixUOD2dP1fE5c5KZSkdXgmk7WDdrNjcH8wG/rGyX3TByc4S+uCW7l4ZXTXQEnGZ+YJQ=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+<!-- Contact Form Script -->
+<script>
+    const contactForm = document.getElementById('contactForm');
+    const formResponse = document.getElementById('formResponse');
+
+    contactForm.addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        const name = document.getElementById('name').value.trim();
+        const email = document.getElementById('email').value.trim();
+        const message = document.getElementById('message').value.trim();
+
+        if (name === '' || email === '' || message === '') {
+            alert("Please fill out all fields.");
+            return;
+        }
+
+        formResponse.classList.remove('hidden');
+        contactForm.reset();
+        setTimeout(() => {
+            formResponse.classList.add('hidden');
+        }, 5000);
+    });
+</script>
+
+        <!-- Product Detail Page -->
+        <div id="product-detail" class="page">
+            <div id="productDetailContent" class="bg-white rounded-xl shadow-md overflow-hidden">
+                <!-- Product details will be loaded here -->
+            </div>
+        </div>
+
+        <!-- Cart Page -->
+        <div id="cart" class="page">
+            <h2 class="text-3xl font-bold mb-8">Your Cart</h2>
+
+            <div id="emptyCart" class="bg-white rounded-xl shadow-md p-8 text-center hidden">
+                <i class="fas fa-shopping-cart text-4xl text-gray-300 mb-4"></i>
+                <h3 class="text-xl font-bold mb-2">Your cart is empty</h3>
+                <p class="text-gray-600 mb-6">Start shopping to add items to your cart</p>
+                <button onclick="showPage('shop')"
+                    class="bg-primary hover:bg-secondary text-white font-bold py-3 px-6 rounded-full transition">
+                    Shop Now
+                </button>
+            </div>
+
+            <div id="cartContent" class="hidden">
+                <div class="bg-white rounded-xl shadow-md overflow-hidden mb-6">
+                    <table class="w-full">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-sm font-medium text-gray-500">Product</th>
+                                <th class="px-6 py-3 text-left text-sm font-medium text-gray-500">Price</th>
+                                <th class="px-6 py-3 text-left text-sm font-medium text-gray-500">Quantity</th>
+                                <th class="px-6 py-3 text-left text-sm font-medium text-gray-500">Total</th>
+                                <th class="px-6 py-3 text-left text-sm font-medium text-gray-500"></th>
+                            </tr>
+                        </thead>
+                        <tbody id="cartItems" class="divide-y divide-gray-200">
+                            <!-- Cart items will be loaded here -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="flex justify-between items-center">
+                    <button onclick="clearCart()" class="text-red-500 hover:text-red-700">Clear Cart</button>
+                    <div class="text-right">
+                        <div class="flex justify-between mb-2">
+                            <span class="text-gray-600">Subtotal:</span>
+                            <span id="cartSubtotal" class="font-bold">$0.00</span>
+                        </div>
+                        <button onclick="checkout()"
+                            class="bg-primary hover:bg-secondary text-white font-bold py-3 px-6 rounded-full transition">
+                            Checkout
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-12">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div>
+                    <h3 class="text-xl font-bold mb-4">IronFit</h3>
+                    <p class="text-gray-400">Premium gym wear & equipment for performance and style.</p>
+                </div>
+                <div>
+                    <h4 class="font-bold mb-4">Shop</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#" onclick="showPage('shop')" class="text-gray-400 hover:text-white transition">All
+                                Products</a></li>
+                        <li><a href="#" onclick="showPage('categories')"
+                                class="text-gray-400 hover:text-white transition">Categories</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold mb-4">Company</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#" onclick="showPage('about')"
+                                class="text-gray-400 hover:text-white transition">About Us</a></li>
+                        <li><a href="#" onclick="showPage('contact')"
+                                class="text-gray-400 hover:text-white transition">Contact</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold mb-4">Connect</h4>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-gray-400 hover:text-white transition"><i
+                                class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-white transition"><i
+                                class="fab fa-instagram"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-white transition"><i class="fab fa-twitter"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Product data - 500+ products
+        const products = [
+            // Workout Wear (120 products)
+            {
+                id: 1,
+                name: "Performance Tank Top",
+                price: 34.99,
+                image: "https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/2d915086-08ea-4155-a7d4-e194e2044dfe.png",
+                category: "workout wear",
+                description: "Breathable tank top with moisture-wicking technology for intense workouts.",
+                sizes: ["XS", "S", "M", "L", "XL"],
+                colors: ["Black", "Gray", "Blue", "Red"],
+                rating: 4.8,
+                reviews: 124
+            },
+            {
+                id: 2,
+                name: "Training Joggers",
+                price: 54.99,
+                image: "https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/30083d26-1ca4-48bb-939c-5541ed6852ac.png",
+                category: "workout wear",
+                description: "Stylish joggers with stretch fabric for mobility and comfort.",
+                sizes: ["S", "M", "L", "XL"],
+                colors: ["Black", "Gray"],
+                rating: 4.5,
+                reviews: 92
+            },
+            // Add 118 more workout wear items...
+
+            // Supplements (85 products)
+            {
+                id: 121,
+                name: "Elite Whey Protein",
+                price: 39.99,
+                image: "https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/64748ef4-bd1d-4921-ba49-c5133b0b1511.png",
+                category: "supplements",
+                description: "Premium whey protein isolate with 25g protein per serving.",
+                flavors: ["Chocolate", "Vanilla", "Strawberry"],
+                size: "2 lbs",
+                rating: 4.9,
+                reviews: 210
+            },
+            {
+                id: 122,
+                name: "Pre-Workout Energizer",
+                price: 29.99,
+                image: "https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/e60cd812-7017-4e7a-980c-cef7d8b9a673.png",
+                category: "supplements",
+                description: "Powerful pre-workout formula for energy and focus.",
+                flavors: ["Fruit Punch", "Blue Raspberry"],
+                size: "30 servings",
+                rating: 4.7,
+                reviews: 156
+            },
+            // Add 83 more supplement items...
+
+            // Equipment (150 products)
+            {
+                id: 206,
+                name: "Adjustable Dumbbells",
+                price: 129.99,
+                image: "https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/f4bc3c7a-f47e-4991-b65e-7661c3f29072.png",
+                category: "equipment",
+                description: "Space-saving adjustable dumbbells with quick-select weights.",
+                weightRange: "5-50 lbs",
+                material: "Steel",
+                rating: 4.6,
+                reviews: 67
+            },
+            {
+                id: 207,
+                name: "Resistance Bands Set",
+                price: 49.99,
+                image: "https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/e589d8b4-c101-4e11-9173-7b2aa282b4f0.png",
+                category: "equipment",
+                description: "Set of 5 resistance bands with varying tension levels.",
+                levels: ["Light", "Medium", "Heavy"],
+                includes: ["Handles", "Door anchor"],
+                rating: 4.5,
+                reviews: 89
+            },
+            // Add 148 more equipment items...
+
+            // Accessories (200 products)
+            {
+                id: 356,
+                name: "Gym Bag Pro",
+                price: 59.99,
+                image: "https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/9c3e483b-4c8e-4e1b-a49f-4545ee1f825e.png",
+                category: "accessories",
+                description: "Spacious gym bag with multiple compartments.",
+                capacity: "50L",
+                features: ["Shoe compartment", "Wet pocket"],
+                rating: 4.7,
+                reviews: 134
+            },
+            {
+                id: 357,
+                name: "Hydration Bottle",
+                price: 19.99,
+                image: "https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/6dd5c40e-1410-4248-a783-8b6277f617c1.png",
+                category: "accessories",
+                description: "Insulated water bottle with time markers.",
+                capacity: "32oz",
+                colors: ["Black", "Blue", "Green"],
+                rating: 4.8,
+                reviews: 287
+            }
+            // Add 198 more accessory items...
+
+        ];
+
+        // Cart functionality
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', function () {
+            renderProducts(products);
+            updateCartCount();
+
+            document.getElementById('loadMore').addEventListener('click', function () {
+                currentPage++;
+                renderProducts(products, false);
+                if ((currentPage * productsPerPage) >= products.length) {
+                    this.style.display = 'none';
+                }
+            });
+        });
+
+        // Page navigation
+        function showPage(pageId) {
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+            document.getElementById(pageId).classList.add('active');
+
+            if (pageId === 'cart') {
+                renderCart();
+            }
+        }
+
+        // Mobile menu toggle
+        function toggleMobileMenu() {
+            const mobileMenu = document.getElementById('mobileMenu');
+            mobileMenu.classList.toggle('hidden');
+        }
+
+        // Filter products
+        function filterProducts(category) {
+            let filteredProducts = products;
+
+            if (category !== 'all') {
+                filteredProducts = products.filter(product => product.category === category);
+            }
+
+            renderProducts(filteredProducts);
+        }
+
+        // Sort products
+        function sortProducts() {
+            const sortBy = document.getElementById('sortBy').value;
+            let sortedProducts = [...products];
+
+            switch (sortBy) {
+                case 'low-high':
+                    sortedProducts.sort((a, b) => a.price - b.price);
+                    break;
+                case 'high-low':
+                    sortedProducts.sort((a, b) => b.price - a.price);
+                    break;
+                default:
+                    // Default (featured) - no sorting
+                    break;
+            }
+
+            renderProducts(sortedProducts);
+        }
+
+        // Render products with pagination
+        let currentPage = 1;
+        const productsPerPage = 8;
+
+        function renderProducts(productsToRender, reset = true) {
+            const productContainer = document.getElementById('productContainer');
+            if (reset) {
+                productContainer.innerHTML = '';
+                currentPage = 1;
+            }
+
+            const startIndex = (currentPage - 1) * productsPerPage;
+            const endIndex = startIndex + productsPerPage;
+            const paginatedProducts = productsToRender.slice(0, endIndex);
+
+            productsToRender.forEach(product => {
+                const productCard = document.createElement('div');
+                productCard.className = 'product-card bg-white rounded-lg shadow-md overflow-hidden';
+                productCard.innerHTML = `
+                    <div class="relative cursor-pointer" onclick="showProductDetail(${product.id})">
+                        <img src="${product.image}" alt="${product.name}" class="w-full h-60 object-cover">
+                    </div>
+                    <div class="p-4">
+                        <h3 class="font-bold text-lg mb-1 cursor-pointer hover:text-primary" onclick="showProductDetail(${product.id})">${product.name}</h3>
+                        <div class="flex justify-between items-center">
+                            <span class="font-bold text-primary">$${product.price.toFixed(2)}</span>
+                            <button onclick="event.stopPropagation(); addToCart(${product.id})" class="bg-primary hover:bg-secondary text-white rounded-full p-2 transition">
+                                <i class="fas fa-shopping-cart"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+
+                productContainer.appendChild(productCard);
+            });
+        }
+
+        // Show product detail
+        function showProductDetail(productId) {
+            const product = products.find(p => p.id === productId);
+            if (!product) return;
+
+            const detailContainer = document.getElementById('productDetailContent');
+            detailContainer.innerHTML = `
+                <div class="flex flex-col md:flex-row">
+                    <div class="md:w-1/2 p-6">
+                        <img src="${product.image}" alt="${product.name}" class="w-full rounded-lg">
+                    </div>
+                    <div class="md:w-1/2 p-6">
+                        <h2 class="text-2xl font-bold mb-4">${product.name}</h2>
+                        <div class="mb-4">
+                            <span class="text-primary font-bold text-xl">$${product.price.toFixed(2)}</span>
+                            <div class="flex items-center mt-2">
+                                ${Array(Math.floor(product.rating)).fill('<i class="fas fa-star text-yellow-400"></i>').join('')}
+                                ${product.rating % 1 !== 0 ? '<i class="fas fa-star-half-alt text-yellow-400"></i>' : ''}
+                                <span class="text-gray-600 ml-2">(${product.reviews} reviews)</span>
+                            </div>
+                        </div>
+                        <p class="text-gray-700 mb-6">${product.description}</p>
+                        
+                        ${product.sizes ? `
+                            <div class="mb-4">
+                                <label class="block text-gray-700 mb-2">Size</label>
+                                <div class="flex space-x-2">
+                                    ${product.sizes.map(size => `
+                                        <button class="border border-gray-300 px-3 py-1 rounded hover:bg-gray-100">${size}</button>
+                                    `).join('')}
+                                </div>
+                            </div>
+                        ` : ''}
+                        
+                        ${product.colors ? `
+                            <div class="mb-6">
+                                <label class="block text-gray-700 mb-2">Color</label>
+                                <div class="flex space-x-2">
+                                    ${product.colors.map(color => `
+                                        <button class="w-8 h-8 rounded-full border border-gray-300" style="background-color: ${color.toLowerCase()}" title="${color}"></button>
+                                    `).join('')}
+                                </div>
+                            </div>
+                        ` : ''}
+                        
+                        <button onclick="addToCart(${product.id})" class="bg-primary hover:bg-secondary text-white font-bold py-3 px-6 rounded-full transition w-full">
+                            Add to Cart
+                        </button>
+                    </div>
+                </div>
+            `;
+
+            showPage('product-detail');
+        }
+
+        // Add to cart
+        function addToCart(productId) {
+            const product = products.find(p => p.id === productId);
+            if (!product) return;
+
+            const existingItem = cart.find(item => item.id === productId);
+
+            if (existingItem) {
+                existingItem.quantity += 1;
+            } else {
+                cart.push({
+                    id: product.id,
+                    name: product.name,
+                    price: product.price,
+                    image: product.image,
+                    quantity: 1
+                });
+            }
+
+            localStorage.setItem('cart', JSON.stringify(cart));
+            updateCartCount();
+
+            // Show notification
+            const notification = document.createElement('div');
+            notification.className = 'fixed bottom-4 right-4 bg-green-500 text-white px-4 py-2 rounded-md shadow-lg';
+            notification.innerHTML = `${product.name} added to cart`;
+            document.body.appendChild(notification);
+
+            setTimeout(() => {
+                notification.remove();
+            }, 2000);
+        }
+
+        // Update cart count
+        function updateCartCount() {
+            const cartCount = document.getElementById('cartCount');
+            const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+
+            if (totalItems > 0) {
+                cartCount.textContent = totalItems;
+                cartCount.classList.remove('hidden');
+            } else {
+                cartCount.classList.add('hidden');
+            }
+        }
+
+        // Render cart
+        function renderCart() {
+            const cartItemsContainer = document.getElementById('cartItems');
+            const emptyCartMessage = document.getElementById('emptyCart');
+            const cartContent = document.getElementById('cartContent');
+
+            if (cart.length === 0) {
+                emptyCartMessage.classList.remove('hidden');
+                cartContent.classList.add('hidden');
+                return;
+            }
+
+            emptyCartMessage.classList.add('hidden');
+            cartContent.classList.remove('hidden');
+
+            cartItemsContainer.innerHTML = '';
+
+            cart.forEach((item, index) => {
+                const product = products.find(p => p.id === item.id);
+                if (!product) return;
+
+                const tr = document.createElement('tr');
+                tr.className = 'cart-item hover:bg-gray-50';
+                tr.innerHTML = `
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="flex items-center">
+                            <div class="flex-shrink-0 h-10 w-10">
+                                <img class="h-10 w-10 rounded" src="${product.image}" alt="${product.name}">
+                            </div>
+                            <div class="ml-4">
+                                <div class="text-sm font-medium text-gray-900">${product.name}</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        $${product.price.toFixed(2)}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <input type="number" min="1" value="${item.quantity}" 
+                               onchange="updateCartItem(${index}, this.value)" 
+                               class="w-16 text-center border-gray-300 rounded-md focus:ring-primary">
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                        $${(product.price * item.quantity).toFixed(2)}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                        <button onclick="removeFromCart(${index})" class="text-red-500 hover:text-red-700">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                `;
+
+                cartItemsContainer.appendChild(tr);
+            });
+
+            // Update totals
+            const subtotal = cart.reduce((sum, item) => {
+                const product = products.find(p => p.id === item.id);
+                return sum + (product.price * item.quantity);
+            }, 0);
+
+            document.getElementById('cartSubtotal').textContent = `$${subtotal.toFixed(2)}`;
+        }
+
+        // Update cart item quantity
+        function updateCartItem(index, newQuantity) {
+            newQuantity = parseInt(newQuantity);
+            if (isNaN(newQuantity) || newQuantity < 1) return;
+
+            cart[index].quantity = newQuantity;
+            localStorage.setItem('cart', JSON.stringify(cart));
+            renderCart();
+            updateCartCount();
+        }
+
+        // Remove from cart
+        function removeFromCart(index) {
+            cart.splice(index, 1);
+            localStorage.setItem('cart', JSON.stringify(cart));
+            renderCart();
+            updateCartCount();
+        }
+
+        // Clear cart
+        function clearCart() {
+            cart = [];
+            localStorage.setItem('cart', JSON.stringify(cart));
+            renderCart();
+            updateCartCount();
+        }
+
+        // Checkout
+        function checkout() {
+            alert('Checkout functionality would redirect to payment gateway in a real application.');
+        }
+    </script>
+</body>
+
+</html>
